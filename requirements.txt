@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+streamlit
+python-jose
+passlib[bcrypt]
+bcrypt
+transformers
+torch
+sentencepiece
+nltk
+googletrans==4.0.0-rc1
+pydantic
+httpx
+python-dotenv
+transformers
