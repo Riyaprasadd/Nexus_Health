@@ -1,6 +1,8 @@
 # Python compiled files
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
 # Environment files
 .env
@@ -16,6 +18,16 @@ backend/*.db
 # VSCode
 .vscode/
 
-# Node modules (if you have frontend packages)
+# Node modules
 node_modules/
 frontend/frontend/node_modules/
+
+# MacOS
+.DS_Store
+
+# Python virtual environments
+venv/
+env/
+
+# Ignore migrations if you don't want them tracked
+migrations/

@@ -2,8 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 # ✅ Path to your SQLite DB
-DATABASE_URL = r"sqlite:///C:\Users\riyap\Desktop\chatbot\Global-wellness-chatbot-An-AI-powered-chatbot-that-provides-health-information-\backend\chatbot.db"
-
+DATABASE_URL = r"sqlite:///C:\Users\riyap\Desktop\chatbot\Nexus_Health\backend\chatbot.db"
 # ----------------- Engine -----------------
 engine = create_engine(
     DATABASE_URL, connect_args={"check_same_thread": False}
