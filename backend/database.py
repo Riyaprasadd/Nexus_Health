@@ -1,69 +1,29 @@
-import sqlite3
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-def get_conn():
-    conn = sqlite3.connect(DB_PATH)
-    conn.execute("PRAGMA journal_mode=WAL;")
-    return conn
+# ✅ Path to your SQLite DB
+DATABASE_URL = r"sqlite:///C:\Users\riyap\Desktop\chatbot\Global-wellness-chatbot-An-AI-powered-chatbot-that-provides-health-information-\backend\chatbot.db"
 
+# ----------------- Engine -----------------
+engine = create_engine(
+    DATABASE_URL, connect_args={"check_same_thread": False}
+)
+
+# ----------------- Session -----------------
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# ----------------- Base -----------------
+Base = declarative_base()
+
+# ----------------- Init DB -----------------
 def init_db():
-    conn = get_conn()
-    cur = conn.cursor()
-    cur.execute(
-        """
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            password_hash TEXT NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
-        """
-    )
-    cur.execute(
-        """
-        CREATE TABLE IF NOT EXISTS chats (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL,
-            message TEXT NOT NULL,
-            reply TEXT NOT NULL,
-            intent TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
-        """
-    )
-    conn.commit()
-    conn.close()
+    import backend.models  # ensure models are imported
+    Base.metadata.create_all(bind=engine)
 
-# ---- Users ----
-
-def add_user(username: str, password_hash: str) -> bool:
+# ----------------- Dependency for FastAPI -----------------
+def get_db():
+    db = SessionLocal()
     try:
-        conn = get_conn()
-        conn.execute(
-            "INSERT INTO users (username, password_hash) VALUES (?, ?)",
-            (username, password_hash),
-        )
-        conn.commit()
-        conn.close()
-        return True
-    except sqlite3.IntegrityError:
-        return False
-
-
-def get_user(username: str) -> Optional[tuple[int, str, str, str]]:
-    conn = get_conn()
-    cur = conn.cursor()
-    cur.execute("SELECT id, username, password_hash, created_at FROM users WHERE username=?", (username,))
-    row = cur.fetchone()
-    conn.close()
-    return row
-
-# ---- Logs ----
-
-def log_chat(username: str, message: str, reply: str, intent: str = "unknown"):
-    conn = get_conn()
-    conn.execute(
-        "INSERT INTO chats (username, message, reply, intent) VALUES (?, ?, ?, ?)",
-        (username, message, reply, intent),
-    )
-    conn.commit()
-    conn.close()
+        yield db
+    finally:
+        db.close()
