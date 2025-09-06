@@ -1,0 +1,21 @@
+# Python compiled files
+__pycache__/
+*.pyc
+
+# Environment files
+.env
+backend/.env
+
+# Databases
+*.db
+backend/*.db
+
+# Logs
+*.log
+
+# VSCode
+.vscode/
+
+# Node modules (if you have frontend packages)
+node_modules/
+frontend/frontend/node_modules/
